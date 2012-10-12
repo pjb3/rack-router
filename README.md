@@ -1,6 +1,6 @@
 # Rack::Router
 
-A router for rack apps
+A simple router for rack apps
 
 ## Installation
 
@@ -18,7 +18,7 @@ Or install it yourself as:
 
 ## Usage
 
-Coming soon...
+See [config.ru](http://github.com/pjb3/rack-router/tree/master/config.ru)
 
 ## Contributing
 
