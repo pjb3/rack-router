@@ -7,8 +7,8 @@ class RouterTest < Test::Unit::TestCase
     app2  = lambda{|env| [200, {}, ["2"]] }
 
     router = Rack::Router.new do
-      post "/stuff" => app2
-      put "/it" => app2
+      post "/stuff" => app2, :as => "stuff"
+      put "/it" => app2, :as => :it
       delete "/remove" => app2
       get "/:id" => app1
     end
@@ -21,6 +21,8 @@ class RouterTest < Test::Unit::TestCase
     }, router.routes)
 
     assert_equal ["42"], router.call("REQUEST_METHOD" => "GET", "PATH_INFO" => "/42").last
+    assert_equal "/stuff", router[:stuff]
+    assert_equal "/it", router[:it]
   end
 end
 

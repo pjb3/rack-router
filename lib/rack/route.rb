@@ -1,7 +1,7 @@
 module Rack
   class Route
 
-    attr_accessor :pattern, :app, :constraints
+    attr_accessor :pattern, :app, :constraints, :name
 
     PATH_INFO = 'PATH_INFO'.freeze
     DEFAULT_WILDCARD_NAME = :paths
@@ -10,7 +10,7 @@ module Rack
     NAMED_SEGMENTS_REPLACEMENT_PATTERN = /\/:([^$\/]+)/.freeze
     DOT = '.'.freeze
 
-    def initialize(pattern, app, constraints=nil)
+    def initialize(pattern, app, options={})
       if pattern.to_s.strip.empty?
         raise ArgumentError.new("pattern cannot be blank")
       end
@@ -21,7 +21,8 @@ module Rack
 
       @pattern = pattern
       @app = app
-      @constraints = constraints
+      @constraints = options && options[:constraints]
+      @name = options && options[:as]
     end
 
     def regexp

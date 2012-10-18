@@ -21,7 +21,12 @@ module Rack
 
     def initialize(&block)
       @routes = {}
+      @named_routes = {}
       routes(&block)
+    end
+
+    def [](route_name)
+      @named_routes[route_name]
     end
 
     def routes(&block)
@@ -46,9 +51,13 @@ module Rack
     end
 
     def route(method, route_spec)
-      route = Route.new(route_spec.first.first, route_spec.first.last)
+      route = Route.new(route_spec.first.first, route_spec.first.last, route_spec.reject{|k,_| k == route_spec.first.first })
       @routes[method] ||= []
       @routes[method] << route
+      if route_spec && route_spec[:as]
+        # Using ||= so the first route with that name will be returned
+        @named_routes[route_spec[:as].to_sym] ||= route_spec.first.first
+      end
       route
     end
 

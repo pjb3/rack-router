@@ -1,6 +1,6 @@
 # Rack::Router
 
-A simple router for rack apps
+A simple router for rack apps.  Requires Ruby 1.9+.
 
 ## Installation
 

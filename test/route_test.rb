@@ -30,9 +30,11 @@ class RouteTest < Test::Unit::TestCase
 
   def test_match_with_constraints
     r = route("/posts/:year/:month/:day/:slug",
-              :year => /\A\d{4}\Z/,
-              :month => /\A\d{1,2}\Z/,
-              :day => /\A\d{1,2}\Z/)
+              :constraints => {
+                :year => /\A\d{4}\Z/,
+                :month => /\A\d{1,2}\Z/,
+                :day => /\A\d{1,2}\Z/},
+              :as => "article")
     assert_equal({
       :year => "2012",
       :month => "9",
@@ -41,6 +43,7 @@ class RouteTest < Test::Unit::TestCase
     }, r.match("/posts/2012/9/20/test"))
     assert_equal(nil, r.match("/posts/2012/9/20"))
     assert_equal(nil, r.match("/posts/2012/x/20/test"))
+    assert_equal "article", r.name
   end
 
   def test_eql
@@ -51,8 +54,8 @@ class RouteTest < Test::Unit::TestCase
   end
 
   private
-  def route(path, constraints=nil)
-    Rack::Route.new(path, lambda{|env| [200, {}, [""]] }, constraints)
+  def route(path, options={})
+    Rack::Route.new(path, lambda{|env| [200, {}, [""]] }, options)
   end
 
   def match(pattern, path, params)
