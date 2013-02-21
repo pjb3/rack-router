@@ -1,4 +1,5 @@
 require 'rack/route'
+require 'rack/version'
 
 module Rack
 
@@ -79,6 +80,7 @@ module Rack
             return route.app
           end
         end
+        nil
       end
     end
 
