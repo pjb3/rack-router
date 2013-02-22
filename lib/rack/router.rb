@@ -23,7 +23,7 @@ module Rack
     def initialize(&block)
       @routes = {}
       @named_routes = {}
-      routes(&block)
+      @lazily_initialized_routes = block
     end
 
     def [](route_name)
@@ -31,6 +31,7 @@ module Rack
     end
 
     def routes(&block)
+      initialize_lazy_routes
       instance_eval(&block) if block
       @routes
     end
@@ -52,6 +53,7 @@ module Rack
     end
 
     def route(method, route_spec)
+      initialize_lazy_routes
       route = Route.new(route_spec.first.first, route_spec.first.last, route_spec.reject{|k,_| k == route_spec.first.first })
       @routes[method] ||= []
       @routes[method] << route
@@ -86,6 +88,14 @@ module Rack
 
     def not_found(env)
       DEFAULT_NOT_FOUND_RESPONSE
+    end
+
+    private
+    def initialize_lazy_routes
+      unless @lazy_routes_initialized
+        @lazy_routes_initialized = true
+        routes(&@lazily_initialized_routes) if @lazily_initialized_routes
+      end
     end
   end
 end
