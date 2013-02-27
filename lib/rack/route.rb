@@ -37,10 +37,13 @@ module Rack
           pattern_match[1].to_sym
         end
         pattern.gsub(WILDCARD_PATTERN,'(?:/(.*)|)')
-      elsif pattern_match = pattern.match(NAMED_SEGMENTS_PATTERN)
-        pattern.gsub(NAMED_SEGMENTS_REPLACEMENT_PATTERN, '/(?<\1>[^$/]+)')
       else
-        pattern
+        p = if pattern_match = pattern.match(NAMED_SEGMENTS_PATTERN)
+          pattern.gsub(NAMED_SEGMENTS_REPLACEMENT_PATTERN, '/(?<\1>[^.$/]+)')
+        else
+          pattern
+        end
+        p + '(?:\.(?<format>.*))?'
       end
       Regexp.new("\\A#{src}\\Z")
     end
@@ -50,12 +53,14 @@ module Rack
         raise ArgumentError.new("path is required")
       end
 
-      if path_match = path.split(DOT).first.match(regexp)
+      if path_match = path.match(regexp)
         params = if @wildcard_name
           { @wildcard_name => path_match[1].to_s.split('/') }
         else
           Hash[path_match.names.map(&:to_sym).zip(path_match.captures)]
         end
+
+        params.delete(:format) if params.has_key?(:format) && params[:format].nil?
 
         if meets_constraints(params)
           params

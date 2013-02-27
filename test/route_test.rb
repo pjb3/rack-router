@@ -25,7 +25,8 @@ class RouteTest < Test::Unit::TestCase
     match "/posts/:id" , "/posts/42"     , { :id => "42" }
     match "/posts/:id" , "/posts"        , nil
     match "/:x/:y"     , "/a/b"          , { :x => "a" , :y => "b" }
-    match "/posts/:id" , "/posts/42.html", { :id => "42" }
+    match "/posts"     , "/posts.json"   , { :format => "json" }
+    match "/posts/:id" , "/posts/42.json", { :id => "42", :format => "json" }
   end
 
   def test_match_with_constraints

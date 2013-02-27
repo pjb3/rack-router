@@ -3,7 +3,7 @@ Gem::Specification.new do |gem|
   gem.authors       = ["Paul Barry"]
   gem.email         = ["mail@paulbarry.com"]
   gem.description   = %q{A simple router for Rack apps}
-  gem.summary       = %q{A simple router for rack apps}
+  gem.summary       = %q{A simple router for Rack apps}
   gem.homepage      = "https://github.com/pjb3/rack-router"
 
   gem.files         = `git ls-files`.split($\)
@@ -11,5 +11,5 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.name          = "rack-router"
   gem.require_paths = ["lib"]
-  gem.version       = "0.2.1"
+  gem.version       = "0.3.0"
 end
