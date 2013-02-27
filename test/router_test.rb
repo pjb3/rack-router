@@ -21,6 +21,7 @@ class RouterTest < Test::Unit::TestCase
     }, router.routes)
 
     assert_equal ["42"], router.call("REQUEST_METHOD" => "GET", "PATH_INFO" => "/42").last
+    assert_equal ["<h1>Not Found</h1><p>No route matches GET /not/found</p>"], router.call("REQUEST_METHOD" => "GET", "PATH_INFO" => "/not/found").last
     assert_equal "/stuff", router[:stuff]
     assert_equal "/it", router[:it]
   end

@@ -13,12 +13,6 @@ module Rack
     REQUEST_METHOD = 'REQUEST_METHOD'.freeze
     PATH_INFO = 'PATH_INFO'.freeze
     ROUTE_PARAMS = 'rack.route_params'.freeze
-    DEFAULT_NOT_FOUND_BODY = '<h1>Not Found</h1>'.freeze
-    DEFAULT_NOT_FOUND_RESPONSE = [404,
-      {
-        "Content-Type" => "text/html",
-        "Content-Length" => DEFAULT_NOT_FOUND_BODY.length.to_s
-      }, [DEFAULT_NOT_FOUND_BODY]]
 
     def initialize(&block)
       @routes = {}
@@ -85,7 +79,15 @@ module Rack
     end
 
     def not_found(env)
-      DEFAULT_NOT_FOUND_RESPONSE
+      body = "<h1>Not Found</h1><p>No route matches #{env[REQUEST_METHOD]} #{env[PATH_INFO]}</p>"
+      [
+        404,
+        {
+          "Content-Type" => "text/html",
+          "Content-Length" => body.length.to_s
+        },
+        [body]
+      ]
     end
   end
 end
