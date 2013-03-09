@@ -40,14 +40,16 @@ end
 run router
 ```
 
+In this example, `hello` is just a rack app defined inline, in order to give us something to route to.  The route to our hello app includes a parameter `:name`.  The hello rack app is able to access that parameter via the rack env.
+
 This is a valid Rackup file, so if you put this in a file named `config.ru` and run `rackup`, you will be app to hit the application like this:
 
     $ curl http://localhost:9292/hello/paul
     <h1>Hello, paul</h1>
 
-Also, don't forget to try the lobster!
+Don't forget to try the lobster!
 
-    open http://localhost:9292/lobster
+    $ open http://localhost:9292/lobster
 
 ## Contributing
 
