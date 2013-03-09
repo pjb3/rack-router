@@ -1,9 +1,9 @@
 require 'rack/route'
-require 'rack/version'
 
 module Rack
 
   class Router
+    VERSION = "0.3.1"
 
     HEAD = 'HEAD'.freeze
     GET = 'GET'.freeze

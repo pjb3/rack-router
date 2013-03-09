@@ -18,7 +18,36 @@ Or install it yourself as:
 
 ## Usage
 
-See [config.ru](http://github.com/pjb3/rack-router/tree/master/config.ru)
+Here's an example showing a simple rack app that prints the value of a route parameter:
+
+``` ruby
+require 'rack/router'
+require 'rack/lobster'
+
+hello = ->(env) do
+  [
+    200,
+    { "Content-Type" => "text/html" },
+    ["<h1>Hello, #{env['rack.route_params'][:name]}</h1>"]
+  ]
+end
+
+router = Rack::Router.new do
+  get "/hello/:name" => hello
+  get "/lobster" => Rack::Lobster.new, :as => "lobster"
+end
+
+run router
+```
+
+This is a valid Rackup file, so if you put this in a file named `config.ru` and run `rackup`, you will be app to hit the application like this:
+
+    $ curl http://localhost:9292/hello/paul
+    <h1>Hello, paul</h1>
+
+Also, don't forget to try the lobster!
+
+    open http://localhost:9292/lobster
 
 ## Contributing
 
