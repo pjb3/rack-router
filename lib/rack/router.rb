@@ -3,7 +3,7 @@ require 'rack/route'
 module Rack
 
   class Router
-    VERSION = "0.3.1"
+    VERSION = "0.4.0"
 
     HEAD = 'HEAD'.freeze
     GET = 'GET'.freeze
@@ -15,7 +15,6 @@ module Rack
     ROUTE_PARAMS = 'rack.route_params'.freeze
 
     def initialize(&block)
-      @routes = {}
       @named_routes = {}
       routes(&block)
     end
@@ -46,9 +45,9 @@ module Rack
     end
 
     def route(method, route_spec)
-      route = Route.new(route_spec.first.first, route_spec.first.last, route_spec.reject{|k,_| k == route_spec.first.first })
-      @routes[method] ||= []
-      @routes[method] << route
+      route = Route.new(method, route_spec.first.first, route_spec.first.last, route_spec.reject{|k,_| k == route_spec.first.first })
+      @routes ||= []
+      @routes << route
       if route_spec && route_spec[:as]
         # Using ||= so the first route with that name will be returned
         @named_routes[route_spec[:as].to_sym] ||= route_spec.first.first
@@ -67,15 +66,13 @@ module Rack
     def match(env)
       request_method = env[REQUEST_METHOD]
       request_method = GET if request_method == HEAD
-      if method_routes = @routes[request_method]
-        method_routes.each do |route|
-          if params = route.match(env[PATH_INFO])
-            env[ROUTE_PARAMS] = params
-            return route.app
-          end
+      routes.each do |route|
+        if params = route.match(request_method, env[PATH_INFO])
+          env[ROUTE_PARAMS] = params
+          return route.app
         end
-        nil
       end
+      nil
     end
 
     def not_found(env)

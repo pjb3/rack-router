@@ -13,12 +13,12 @@ class RouterTest < Test::Unit::TestCase
       get "/:id" => app1
     end
 
-    assert_equal({
-      "POST" => [Rack::Route.new("/stuff", app2)],
-      "PUT" => [Rack::Route.new("/it", app2)],
-      "DELETE" => [Rack::Route.new("/remove", app2)],
-      "GET"  => [Rack::Route.new("/:id", app1)]
-    }, router.routes)
+    assert_equal([
+      Rack::Route.new('POST', '/stuff', app2),
+      Rack::Route.new('PUT', '/it', app2),
+      Rack::Route.new('DELETE', '/remove', app2),
+      Rack::Route.new('GET', '/:id', app1)
+    ], router.routes)
 
     assert_equal ["42"], router.call("REQUEST_METHOD" => "GET", "PATH_INFO" => "/42").last
     assert_equal ["<h1>Not Found</h1><p>No route matches GET /not/found</p>"], router.call("REQUEST_METHOD" => "GET", "PATH_INFO" => "/not/found").last

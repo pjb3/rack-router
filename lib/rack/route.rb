@@ -1,7 +1,6 @@
 module Rack
   class Route
-
-    attr_accessor :pattern, :app, :constraints, :name
+    attr_accessor :request_method, :pattern, :app, :constraints, :name
 
     PATH_INFO = 'PATH_INFO'.freeze
     DEFAULT_WILDCARD_NAME = :paths
@@ -10,7 +9,7 @@ module Rack
     NAMED_SEGMENTS_REPLACEMENT_PATTERN = /\/:([^$\/]+)/.freeze
     DOT = '.'.freeze
 
-    def initialize(pattern, app, options={})
+    def initialize(request_method, pattern, app, options={})
       if pattern.to_s.strip.empty?
         raise ArgumentError.new("pattern cannot be blank")
       end
@@ -19,6 +18,7 @@ module Rack
         raise ArgumentError.new("app must be callable")
       end
 
+      @request_method = request_method
       @pattern = pattern
       @app = app
       @constraints = options && options[:constraints]
@@ -48,7 +48,11 @@ module Rack
       Regexp.new("\\A#{src}\\Z")
     end
 
-    def match(path)
+    def match(request_method, path)
+      unless request_method == self.request_method
+        return nil
+      end
+
       if path.to_s.strip.empty?
         raise ArgumentError.new("path is required")
       end
@@ -81,6 +85,7 @@ module Rack
 
     def eql?(o)
       o.is_a?(self.class) &&
+        o.request_method == request_method &&
         o.pattern == pattern &&
         o.app == app &&
         o.constraints == constraints
@@ -88,7 +93,7 @@ module Rack
     alias == eql?
 
     def hash
-      pattern.hash ^ app.hash ^ constraints.hash
+      request_method.hash ^ pattern.hash ^ app.hash ^ constraints.hash
     end
   end
 end

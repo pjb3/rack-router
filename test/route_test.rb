@@ -30,7 +30,7 @@ class RouteTest < Test::Unit::TestCase
   end
 
   def test_match_with_constraints
-    r = route("/posts/:year/:month/:day/:slug",
+    r = route('GET', "/posts/:year/:month/:day/:slug",
               :constraints => {
                 :year => /\A\d{4}\Z/,
                 :month => /\A\d{1,2}\Z/,
@@ -41,22 +41,23 @@ class RouteTest < Test::Unit::TestCase
       :month => "9",
       :day => "20",
       :slug => "test"
-    }, r.match("/posts/2012/9/20/test"))
-    assert_equal(nil, r.match("/posts/2012/9/20"))
-    assert_equal(nil, r.match("/posts/2012/x/20/test"))
+    }, r.match('GET', "/posts/2012/9/20/test"))
+    assert_equal(nil, r.match('POST', "/posts/2012/9/20/test"))
+    assert_equal(nil, r.match('GET', "/posts/2012/9/20"))
+    assert_equal(nil, r.match('GET', "/posts/2012/x/20/test"))
     assert_equal "article", r.name
   end
 
   def test_eql
     app  = lambda{|env| [200, {}, [""]] }
     assert_equal(
-      Rack::Route.new("/", app),
-      Rack::Route.new("/", app))
+      Rack::Route.new('GET', "/", app),
+      Rack::Route.new('GET', "/", app))
   end
 
   private
-  def route(path, options={})
-    Rack::Route.new(path, lambda{|env| [200, {}, [""]] }, options)
+  def route(request_method, path, options={})
+    Rack::Route.new(request_method, path, lambda{|env| [200, {}, [""]] }, options)
   end
 
   def match(pattern, path, params)
@@ -66,7 +67,7 @@ class RouteTest < Test::Unit::TestCase
     else
       msg << "no match #{path}"
     end
-    assert_equal(params, route(pattern).match(path), msg)
+    assert_equal(params, route('GET', pattern).match('GET', path), msg)
   end
 end
 
