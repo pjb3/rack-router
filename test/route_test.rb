@@ -1,7 +1,7 @@
-require "test/unit"
+require "minitest/autorun"
 require "rack/route"
 
-class RouteTest < Test::Unit::TestCase
+class RouteTest < Minitest::Test
 
   def test_match
     match "/*"         , "/"             , :paths => []
@@ -27,6 +27,8 @@ class RouteTest < Test::Unit::TestCase
     match "/:x/:y"     , "/a/b"          , { :x => "a" , :y => "b" }
     match "/posts"     , "/posts.json"   , { :format => "json" }
     match "/posts/:id" , "/posts/42.json", { :id => "42", :format => "json" }
+    match "/api/v:version"        , "/api/v2", :version => "2"
+    match "/api/v:version/things" , "/api/v2/things" , :version => "2"
   end
 
   def test_match_with_constraints
@@ -70,4 +72,3 @@ class RouteTest < Test::Unit::TestCase
     assert_equal(params, route('GET', pattern).match('GET', path), msg)
   end
 end
-

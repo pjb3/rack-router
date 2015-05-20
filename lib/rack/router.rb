@@ -3,7 +3,7 @@ require 'rack/route'
 module Rack
 
   class Router
-    VERSION = "0.4.0"
+    VERSION = "0.5.0"
 
     HEAD = 'HEAD'.freeze
     GET = 'GET'.freeze
@@ -88,4 +88,3 @@ module Rack
     end
   end
 end
-

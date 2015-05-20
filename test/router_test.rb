@@ -1,7 +1,7 @@
-require 'test/unit'
+require "minitest/autorun"
 require 'rack/router'
 
-class RouterTest < Test::Unit::TestCase
+class RouterTest < Minitest::Test
   def test_call
     app1  = lambda{|env| [200, {}, [env["rack.route_params"][:id]]] }
     app2  = lambda{|env| [200, {}, ["2"]] }
@@ -26,4 +26,3 @@ class RouterTest < Test::Unit::TestCase
     assert_equal "/it", router[:it]
   end
 end
-

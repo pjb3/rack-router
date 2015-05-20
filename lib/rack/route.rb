@@ -5,8 +5,7 @@ module Rack
     PATH_INFO = 'PATH_INFO'.freeze
     DEFAULT_WILDCARD_NAME = :paths
     WILDCARD_PATTERN = /\/\*(.*)/.freeze
-    NAMED_SEGMENTS_PATTERN = /\/:([^$\/]+)/.freeze
-    NAMED_SEGMENTS_REPLACEMENT_PATTERN = /\/:([^$\/]+)/.freeze
+    NAMED_SEGMENTS_PATTERN = /\/([^\/]*):([^:$\/]+)/.freeze
     DOT = '.'.freeze
 
     def initialize(request_method, pattern, app, options={})
@@ -39,12 +38,13 @@ module Rack
         pattern.gsub(WILDCARD_PATTERN,'(?:/(.*)|)')
       else
         p = if pattern_match = pattern.match(NAMED_SEGMENTS_PATTERN)
-          pattern.gsub(NAMED_SEGMENTS_REPLACEMENT_PATTERN, '/(?<\1>[^.$/]+)')
+          pattern.gsub(NAMED_SEGMENTS_PATTERN, '/\1(?<\2>[^.$/]+)')
         else
           pattern
         end
         p + '(?:\.(?<format>.*))?'
       end
+      #puts "pattern: #{pattern}, src: #{src}"
       Regexp.new("\\A#{src}\\Z")
     end
 
