@@ -7,6 +7,7 @@ module Rack
 
     HEAD = 'HEAD'.freeze
     GET = 'GET'.freeze
+    PATCH = 'PATCH'.freeze
     POST = 'POST'.freeze
     PUT = 'PUT'.freeze
     DELETE = 'DELETE'.freeze
@@ -30,6 +31,10 @@ module Rack
 
     def get(route_spec)
       route(GET, route_spec)
+    end
+
+    def patch(route_spec)
+      route(PATCH, route_spec)
     end
 
     def post(route_spec)
